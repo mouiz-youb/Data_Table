@@ -18,3 +18,35 @@ model Post {
 
     @@index([name])
 }
+model User {
+    id       Int      @id @default(autoincrement())
+    email     String   @unique
+    password  String
+    name      String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([email])
+}
+model Product{
+    id       Int      @id @default(autoincrement())
+    ProductName      String
+    Price     Float
+    Description String?
+    Stock     Int
+    Category  String?
+    // ImageUrl  String?
+    Rating    Float?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+model Order{
+    id       Int      @id @default(autoincrement())
+    userId    Int
+    productId Int
+    quantity  Int
+    totalPrice Float
+    status    String   @default("pending")
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
