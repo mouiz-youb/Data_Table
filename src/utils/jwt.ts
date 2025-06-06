@@ -3,13 +3,13 @@ import {env} from  "../env.js";
 const ACCESS_TOKEN_SECRET = env.ACCESS_TOKEN_SECRET;
 const  REFRESH_TOKEN_SECRET = env.REFRESH_TOKEN_SECRET;
 // generate access token 
-export const generateAccessToken = (userId: string)=> {
+export const generateAccessToken = (userId: number)=> {
 return jwt.sign(
     {userId} , 
     ACCESS_TOKEN_SECRET, 
     {expiresIn: '15m',})
 }
-export const generateRefreshToken = (userId: string)=> {
+export const generateRefreshToken = (userId: number)=> {
 return jwt.sign(
     {userId} , 
     ACCESS_TOKEN_SECRET, 
