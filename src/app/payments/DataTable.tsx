@@ -11,8 +11,15 @@ import {
     getSortedRowModel,
     useReactTable,
     type ColumnFiltersState,
+    type VisibilityState,
     getFilteredRowModel,
 } from "@tanstack/react-table"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import type { SortingState } from "@tanstack/react-table"
 
 import {
@@ -37,6 +44,9 @@ export function DataTable<TData, TValue>({
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
+    const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({})
+    const [rowSelection, setRowSelection] = React.useState({})
     const table = useReactTable({
     data,
     columns,
@@ -46,9 +56,13 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+     onRowSelectionChange: setRowSelection,
     state: {
         sorting,
         columnFilters,
+        columnVisibility,
+        rowSelection,
     },
     })
   return (
@@ -63,6 +77,34 @@ export function DataTable<TData, TValue>({
           className="max-w-sm"
         />
       </div>
+       <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-auto">
+              Columns
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter(
+                (column) => column.getCanHide()
+              )
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                )
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

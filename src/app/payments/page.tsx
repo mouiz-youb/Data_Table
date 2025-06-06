@@ -43,7 +43,7 @@ export default async function page() {
     const data = await getData();
 
   return (
-    <div>
+    <div className='p-4'>
         <h1 className="text-2xl font-bold mb-4">Payments</h1>
         <DataTable columns={columns} data={data} />
     </div>
