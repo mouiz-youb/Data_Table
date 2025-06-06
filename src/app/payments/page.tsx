@@ -9,25 +9,33 @@ async function  getData():Promise<Payment[]> {
             id: "1",
             amount: 100,
             status: "pending",
-            email: "a_example.com"
+            email: "a_example.com",
+            name: "John Doe",
+            phone: null
         },
         {
             id: "1",
             amount: 100,
             status: "pending",
-            email: "a_example.com"
+            email: "a_example.com",
+            name: "Jane Smith",
+            phone: 1234567890
         },
         {
             id: "1",
             amount: 100,
             status: "pending",
-            email: "a_example.com"
+            email: "a_example.com",
+            name: "Alice Johnson",
+            phone: 9876543210
         },
         {
             id: "1",
             amount: 100,
             status: "pending",
-            email: "a_example.com"
+            email: "a_example.com",
+            name: "Bob Brown",
+            phone: null
         },
     ]
 }
