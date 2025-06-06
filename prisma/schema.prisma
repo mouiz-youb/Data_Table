@@ -21,12 +21,36 @@ model Post {
 model User {
     id       Int      @id @default(autoincrement())
     email     String   @unique
-    password  String
+    password  String //Sotred as hash
     name      String?
+    AccessToken AccessToken[]
+    refreshToken RefreshToken[]
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
     @@index([email])
+}
+model AccessToken {
+    id       Int      @id @default(autoincrement())
+    userId   Int
+    user User @relation(fields: [userId], references: [id])
+    token    String   @unique
+    expiresAt DateTime
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([userId])
+}
+model RefreshToken {
+    id       Int      @id @default(autoincrement())
+    userId   Int
+    user User @relation(fields: [userId], references: [id])
+    token    String   @unique
+    expiresAt DateTime
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([userId])
 }
 model Product{
     id       Int      @id @default(autoincrement())
