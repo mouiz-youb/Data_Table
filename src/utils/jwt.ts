@@ -17,8 +17,7 @@ return jwt.sign(
 }
 // Verify  tokens
 export const verifyAccessToken=(token:string)=>{
-    return jwt.verify(token,ACCESS_TOKEN_SECRET) as {userId :string}
+    return jwt.verify(token,ACCESS_TOKEN_SECRET) as {userId : number}
 }
 export const verifyRefreshToken=(token:string)=>{
-    return jwt.verify(token , REFRESH_TOKEN_SECRET) as {userId :string}
-}
+    return jwt.verify(token , REFRESH_TOKEN_SECRET) as {userId : number}}
