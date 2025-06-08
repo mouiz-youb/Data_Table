@@ -6,11 +6,12 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { initTRPC } from "@trpc/server";
+import { initTRPC ,TRPCError  } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
-
+import { type NextRequest } from 'next/server'
 import { db } from "@/server/db";
+import { verifyAccessToken } from "@/utils/jwt";
 
 /**
  * 1. CONTEXT
@@ -95,6 +96,29 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
 
   return result;
 });
+// create the auth middle ware 
+const t1 = initTRPC.context<{
+  req?: NextRequest
+  user?: { id: number; email: string }
+}>().create()
+export const middleware = t1.middleware
+// export const publicProcedure = t1.procedure
+const isAuthed = middleware(async({ctx,next})=>{
+  const token = ctx.req?.headers.get(`authorization`)?.split(' ')[1];
+  if(!token) throw new Error('Unauthorized');
+  try {
+    const {userId} = verifyAccessToken(token);
+    const user = await db.user.findUnique({
+      where: { id: userId },
+      select: { id: true, email: true },
+    })
+    if (!user) throw new Error('Unauthorized');
+    return next({ctx:{user}})
+  } catch (error) {
+     throw new TRPCError({ code: 'UNAUTHORIZED' })
+  }
+
+})
 
 /**
  * Public (unauthenticated) procedure
@@ -103,4 +127,6 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const publicProcedure = t.procedure.use(timingMiddleware);
+// export const publicProcedure = t.procedure.use(timingMiddleware)
+export const protectedProcedure = t.procedure.use(timingMiddleware)
+  export const publicProcedure = t1.procedure.use(isAuthed)
